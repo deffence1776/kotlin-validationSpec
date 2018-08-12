@@ -14,7 +14,7 @@ internal class BaseValidationSpecTest : StringSpec({
 
 
     class TestShouldBeGreaterThan<T>(target:Int, idName:String, baseLine:Int)
-        :BaseValidationSpec<Int,T>(
+        :BaseFieldValidationSpec<Int,T>(
             target =target
     ,aSpec = {false}
     ,msgFun = {"$idName should greater than $baseLine"})

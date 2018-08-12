@@ -1,6 +1,6 @@
 package com.deffence1776.validationSpec
 
-import com.deffence1776.validationSpec.specs.BaseValidationSpec
+import com.deffence1776.validationSpec.specs.BaseFieldValidationSpec
 
 
 /**
@@ -20,6 +20,13 @@ class Validator<T>(block: Validator<T>.() -> Unit) {
         specs.add(Pair(emptyList(), { target: T -> aSpec.invoke(target) }))
         return this
     }
+
+    fun shouldBe2(aSpec: T.() -> Boolean): Validator<T> {
+        specs.add(Pair(emptyList(), { target: T -> aSpec.invoke(target) }))
+        return this
+    }
+
+
 
     fun errorMessage(msgFun: T.() -> String) {
         specsMags[specs.lastIndex] = msgFun
@@ -72,7 +79,7 @@ class FieldValidator<T, F>(private val fieldNames: List<String>
         specsMags[specs.lastIndex] = msgFun
     }
 
-    fun spec(spec: T.() -> BaseValidationSpec<F, T>) {
+    fun spec(spec: T.() -> BaseFieldValidationSpec<F, T>) {
 
         specs.add(Pair(fieldNames, { target: T ->
             val specValue = spec.invoke(target)
