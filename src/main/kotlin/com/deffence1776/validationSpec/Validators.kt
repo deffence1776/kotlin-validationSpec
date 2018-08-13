@@ -12,7 +12,7 @@ fun <T> validatorSpec(block: Validator<T>.() -> Unit): Validator<T> {
 
 /**
  * Validator clas。
- * stocks validation specs and validate
+ * stocks validation specs and validateAll
  */
 class Validator<T> internal constructor(private val specs: MutableList<ValidationSpec<T>> = mutableListOf()
                    , private val fieldNames: List<String> = emptyList()) {
@@ -51,10 +51,15 @@ class Validator<T> internal constructor(private val specs: MutableList<Validatio
         fFlock.invoke(fieldValidator)
     }
 
-    private fun execValidate(target: T) = specs.mapNotNull { spec ->
+    private fun execValidate(target: T,validateAll:Boolean) = specs.mapNotNull { spec ->
         if (!spec.isValid(target)) {
             val errorMessage = spec.showMessage(target)
-            ValidationError(specName = spec.specName,fieldNames = spec.fieldNames, errorMessage = errorMessage)
+            val error =ValidationError(specName = spec.specName,fieldNames = spec.fieldNames, errorMessage = errorMessage)
+            if(!validateAll){
+                return  listOf(error)
+            }else{
+                error
+            }
         } else {
             null
         }
@@ -63,7 +68,10 @@ class Validator<T> internal constructor(private val specs: MutableList<Validatio
     /**
      * execute validation
      */
-    fun validate(target: T) = ValidationErrors(execValidate(target))
+    fun validateAll(target: T) = ValidationErrors(execValidate(target=target,validateAll=true))
+
+    fun validateUntilFirst(target:T)= ValidationErrors(execValidate(target=target,validateAll=false))
+
 
     /**
      * check registered field names for test

@@ -13,7 +13,7 @@ open class ValidationSpec<T>(val specName:String =""
     fun isValid(target:T):Boolean =assertionFun.invoke(target)
 
 
-    fun errorMessage(msgFun: (target: T) -> String) {
+    fun errorMessage(msgFun:  T.() -> String) {
         this.msgFun = msgFun
     }
 }

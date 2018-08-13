@@ -15,7 +15,7 @@ internal class ShouldBeAllUniqueTest : StringSpec({
             }
         }
 
-        val result = simpleSpec.validate(SpecTestModel(1,2,1))
+        val result = simpleSpec.validateAll(SpecTestModel(1,2,1))
 
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 1
@@ -25,7 +25,7 @@ internal class ShouldBeAllUniqueTest : StringSpec({
             it.fieldNames shouldBe listOf("value1","value2","value3")
         }
 
-        val result2 = simpleSpec.validate(SpecTestModel(1,2,3))
+        val result2 = simpleSpec.validateAll(SpecTestModel(1,2,3))
         result2.hasErrors() shouldBe false
     }
 

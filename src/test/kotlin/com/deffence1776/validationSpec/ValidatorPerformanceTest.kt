@@ -23,13 +23,13 @@ internal class ValidatorPerformanceTest : StringSpec({
         val validationTarget = TestUser()
         val f = {
             for (i in 1..10000) {
-                simpleSpec.validate(validationTarget)
+                simpleSpec.validateAll(validationTarget)
             }
         }
 
         val result = (1..10).map { measureDuration(f) }
 
-        println(result)
+        println(result) //[13, 8, 8, 5, 4, 14, 2, 2, 2, 2]
         result.average().shouldBeLessThan(10.0)
 
     }

@@ -16,7 +16,7 @@ internal class ShouldNotBeEqualsTwoValueTest : StringSpec({
             }
         }
 
-        val result = simpleSpec.validate(SpecTestUser(1,"admin","admin","passX"))
+        val result = simpleSpec.validateAll(SpecTestUser(1,"admin","admin","passX"))
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 1
         result.errors[0].also {

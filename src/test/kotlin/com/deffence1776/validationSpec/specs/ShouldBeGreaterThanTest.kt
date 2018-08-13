@@ -20,7 +20,7 @@ internal class ShouldBeGreaterThanTest : StringSpec({
             }
         }
 
-        val result = testSpec.validate(SpecTestUser())
+        val result = testSpec.validateAll(SpecTestUser())
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 2
         result.errors[0].also {

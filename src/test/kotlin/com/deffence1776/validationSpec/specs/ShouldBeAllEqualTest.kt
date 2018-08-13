@@ -16,7 +16,7 @@ internal class ShouldBeAllEqualTest : StringSpec({
         }
 
 
-        val result = simpleSpec.validate(SpecTestModel(1,2,1))
+        val result = simpleSpec.validateAll(SpecTestModel(1,2,1))
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 1
         result.errors[0].also {
@@ -24,7 +24,7 @@ internal class ShouldBeAllEqualTest : StringSpec({
             it.errorMessage shouldBe "values should be all equal."
             it.fieldNames shouldBe listOf("value1","value2","value3")
         }
-        val result2 = simpleSpec.validate(SpecTestModel(1,1,1))
+        val result2 = simpleSpec.validateAll(SpecTestModel(1,1,1))
         result2.hasErrors() shouldBe false
     }
 

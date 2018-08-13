@@ -16,7 +16,7 @@ internal class ShouldBeLessThanTest : StringSpec({
             }
         }
 
-        val result = simpleSpec.validate(SpecTestUser(20))
+        val result = simpleSpec.validateAll(SpecTestUser(20))
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 2
         result.errors[0].also {
@@ -30,7 +30,5 @@ internal class ShouldBeLessThanTest : StringSpec({
             it.errorMessage shouldBe "ID should be  less than 10."
             it.fieldNames shouldBe listOf("id")
         }
-
     }
-
 })

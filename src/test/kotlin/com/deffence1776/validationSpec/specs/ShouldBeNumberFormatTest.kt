@@ -18,7 +18,7 @@ internal class ShouldBeNumberFormatTest : StringSpec({
             }
         }
 
-        val result = simpleSpec.validate(SpecTestUser())
+        val result = simpleSpec.validateAll(SpecTestUser())
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 2
         result.errors[0].also {

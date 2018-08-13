@@ -16,16 +16,17 @@ internal class ValidatorTest : StringSpec({
             shouldBe { id > 0 }
         }
 
-        val result = simpleSpec.validate(TestUser(1))
+        val result = simpleSpec.validateAll(TestUser(1))
         result.hasErrors() shouldBe false
     }
+
 
     "manual validation works and default message return" {
         val simpleSpec = validatorSpec<TestUser> {
             shouldBe { id > 0 }
         }
 
-        val result = simpleSpec.validate(TestUser())
+        val result = simpleSpec.validateAll(TestUser())
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 1
         result.errors[0].also {
@@ -42,7 +43,7 @@ internal class ValidatorTest : StringSpec({
 
         }
 
-        val result = simpleSpec.validate(TestUser())
+        val result = simpleSpec.validateAll(TestUser())
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 2
         result.errors[0].also {
@@ -58,13 +59,32 @@ internal class ValidatorTest : StringSpec({
         }
     }
 
-    "specified message returns.validate same as registered order" {
+    "multi specs works stop WHen error occured" {
+        val simpleSpec = validatorSpec<TestUser> {
+            shouldBe("id size") { id > 0 }
+            shouldBe { name.isNotBlank() }
+
+        }
+
+        val result = simpleSpec.validateUntilFirst(TestUser())
+        result.hasErrors() shouldBe true
+        result.errors.size shouldBe 1
+        result.errors[0].also {
+            it.specName shouldBe "id size"
+            it.errorMessage shouldBe defaultMessage
+            it.fieldNames shouldBe emptyList()
+        }
+
+    }
+
+
+    "specified message returns.validateAll same as registered order" {
         val testSpec = validatorSpec<TestUser> {
             shouldBe { id > 0 }.errorMessage { "id should greater than zero." }
             shouldBe { name.isNotBlank() }.errorMessage { "name should not blank." }
         }
 
-        val result = testSpec.validate(TestUser())
+        val result = testSpec.validateAll(TestUser())
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 2
 
@@ -92,7 +112,7 @@ internal class ValidatorTest : StringSpec({
             }
         }
 
-        val result = simpleSpec.validate(TestUser())
+        val result = simpleSpec.validateAll(TestUser())
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 3
         result.errors[0].also {
