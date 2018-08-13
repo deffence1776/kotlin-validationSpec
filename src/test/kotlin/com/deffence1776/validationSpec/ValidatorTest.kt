@@ -5,95 +5,100 @@ import io.kotlintest.specs.StringSpec
 
 data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
 
-val defaultMessage = "validation failed"
+const val defaultMessage = "validation failed"
 
 internal class ValidatorTest : StringSpec({
 
 
-    "manual validation works and default message return" {
-        val simpleSpec = Validator<TestUser> {
+    "No error returns when object is valid" {
+        val simpleSpec = validatorSpec<TestUser> {
             shouldBe { id > 0 }
         }
 
-        simpleSpec.validate(TestUser(1)).hasErrors() shouldBe false
-        simpleSpec.validate(TestUser()).hasErrors() shouldBe true
-        simpleSpec.validate(TestUser()).errors[0].errorMessage shouldBe defaultMessage
+        val result = simpleSpec.validate(TestUser(1))
+        result.hasErrors() shouldBe false
+    }
 
+    "manual validation works and default message return" {
+        val simpleSpec = validatorSpec<TestUser> {
+            shouldBe { id > 0 }
+        }
 
-        simpleSpec.validate(TestUser()).fieldErrors("id").isEmpty() shouldBe true
-
+        val result = simpleSpec.validate(TestUser())
+        result.hasErrors() shouldBe true
+        result.errors.size shouldBe 1
+        result.errors[0].also {
+            it.specName shouldBe ""
+            it.errorMessage shouldBe defaultMessage
+            it.fieldNames shouldBe emptyList()
+        }
     }
 
     "multi specs works" {
-        val simpleSpec = Validator<TestUser> {
-            shouldBe { id > 0 }
+        val simpleSpec = validatorSpec<TestUser> {
+            shouldBe("id size") { id > 0 }
             shouldBe { name.isNotBlank() }
 
         }
 
-        simpleSpec.validate(TestUser(1, "name")).hasErrors() shouldBe false
-        simpleSpec.validate(TestUser()).hasErrors() shouldBe true
-        simpleSpec.validate(TestUser()).errors.size shouldBe 2
+        val result = simpleSpec.validate(TestUser())
+        result.hasErrors() shouldBe true
+        result.errors.size shouldBe 2
+        result.errors[0].also {
+            it.specName shouldBe "id size"
+            it.errorMessage shouldBe defaultMessage
+            it.fieldNames shouldBe emptyList()
+        }
 
-        simpleSpec.validate(TestUser()).errors[0].errorMessage shouldBe defaultMessage
-        simpleSpec.validate(TestUser()).errors[1].errorMessage shouldBe defaultMessage
-
-
-        simpleSpec.validate(TestUser()).fieldErrors("id").isEmpty() shouldBe true
-        simpleSpec.validate(TestUser()).fieldErrors("name").isEmpty() shouldBe true
-
+        result.errors[1].also {
+            it.specName shouldBe ""
+            it.errorMessage shouldBe defaultMessage
+            it.fieldNames shouldBe emptyList()
+        }
     }
 
     "specified message returns.validate same as registered order" {
-        val simpleSpec = Validator<TestUser> {
+        val testSpec = validatorSpec<TestUser> {
             shouldBe { id > 0 }.errorMessage { "id should greater than zero." }
             shouldBe { name.isNotBlank() }.errorMessage { "name should not blank." }
         }
 
-        simpleSpec.validate(TestUser()).errors[0].errorMessage shouldBe "id should greater than zero."
-        simpleSpec.validate(TestUser()).errors[1].errorMessage shouldBe "name should not blank."
+        val result = testSpec.validate(TestUser())
+        result.hasErrors() shouldBe true
+        result.errors.size shouldBe 2
+
+        result.errors[0].also {
+            it.errorMessage shouldBe "id should greater than zero."
+            it.fieldNames shouldBe emptyList()
+        }
+
+        result.errors[1].also {
+            it.errorMessage shouldBe "name should not blank."
+            it.fieldNames shouldBe emptyList()
+        }
     }
 
     "field spec works" {
-        val simpleSpec = Validator<TestUser> {
-            field<Int>("id") {
-                shouldBe { id > 0 }.errorMessage { "id should greater than zero." }
-                shouldBe { id < 5 }.errorMessage { "id should smaller than 5." }
+        val simpleSpec = validatorSpec<TestUser> {
+            fieldNames("id") {
+                shouldBe { id > 0 }
             }
-
-            field<Int>("name") {
-                shouldBe { name.isNotBlank() }.errorMessage { "name should not blank." }
+            fieldNames("name") {
+                shouldBe { name.isNotBlank()  }
             }
         }
 
-        simpleSpec.validate(TestUser(1, "name")).hasErrors() shouldBe false
-        simpleSpec.validate(TestUser()).hasErrors() shouldBe true
-        simpleSpec.validate(TestUser(10)).errors.size shouldBe 2
-
-        simpleSpec.validate(TestUser(10)).errors[0].errorMessage shouldBe "id should smaller than 5."
-        simpleSpec.validate(TestUser(10)).errors[1].errorMessage shouldBe "name should not blank."
-
-
-        simpleSpec.validate(TestUser(10)).fieldErrors("id").size shouldBe 1
-        simpleSpec.validate(TestUser()).fieldErrors("name").size shouldBe 1
-    }
-
-    "multi field spec works" {
-        val simpleSpec = Validator<TestUser> {
-            field<String>("password","confirmPassword") {
-                shouldBe { password==confirmPassword }.errorMessage { "error" }
-                shouldBe { password.isNotBlank() && confirmPassword.isNotBlank() }.errorMessage { "error2" }
-            }
+        val result = simpleSpec.validate(TestUser())
+        result.hasErrors() shouldBe true
+        result.errors.size shouldBe 2
+        result.errors[0].also {
+            it.errorMessage shouldBe defaultMessage
+            it.fieldNames shouldBe listOf("id")
         }
 
-        simpleSpec.validate(TestUser(1, "","pass","pass")).hasErrors() shouldBe false
-        simpleSpec.validate(TestUser()).hasErrors() shouldBe true
-        simpleSpec.validate(TestUser(10)).errors.size shouldBe 1
-
-        simpleSpec.validate(TestUser(10,"","pass","pass2")).errors[0].errorMessage shouldBe "error"
-        simpleSpec.validate(TestUser()).errors[0].errorMessage shouldBe "error2"
-
-
-        simpleSpec.validate(TestUser(10)).fieldErrors("password").size shouldBe 1
+        result.errors[1].also {
+            it.errorMessage shouldBe defaultMessage
+            it.fieldNames shouldBe listOf("name")
+        }
     }
 })
