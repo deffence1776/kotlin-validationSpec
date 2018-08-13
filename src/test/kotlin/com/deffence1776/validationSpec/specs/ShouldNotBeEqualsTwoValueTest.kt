@@ -12,7 +12,7 @@ internal class ShouldNotBeEqualsTwoValueTest : StringSpec({
     "spec works "{
         val simpleSpec = validatorSpec<SpecTestUser> {
             fieldNames("name","password") {
-                spec(ShouldNotBeEqualsTwoValue(targetFun = { Pair(password,confirmPassword) },fieldNameInMessage1 ="name",fieldNameInMessage2 = "password" ))
+                spec(ShouldNotBeEqualsTwoValue(targetFun = { Pair(name,password) },fieldNameInMessage1 ="name",fieldNameInMessage2 = "password" ))
             }
         }
 
