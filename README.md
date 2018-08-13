@@ -1,7 +1,9 @@
 Kotlin-validationSpec
 ==========================
 
-kotlin Field validator. 
+kotlin Field validator.  
+Inspired by  [Kotlin Validation](https://github.com/kamedon/Validation) 
+
 
 ## Getting Started
 
@@ -69,7 +71,7 @@ fun main(args: Array<String>) {
 
 ```
 
-* [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationSpec/ValidatorSample.kt) 
+* see [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationSpec/ValidatorSample.kt) 
 
 
 ## Spec Object
