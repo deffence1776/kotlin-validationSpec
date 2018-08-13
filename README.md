@@ -14,7 +14,7 @@ first create validation spec for type.
 //target for validation
 data class SampleUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
 
-val sampleValidationSpec = validatorSpec<SampleUser> {
+val sampleValidationSpec = defineSpecs<SampleUser> {
     //most simple. functional style
     shouldBe { id > 0 }
 
@@ -108,7 +108,7 @@ internal class ValidatorPerformanceTest : StringSpec({
 
     "10,000 times validation" {
         //spec usually create once
-        val simpleSpec = validatorSpec<TestUser> {
+        val simpleSpec = defineSpecs<TestUser> {
             fieldNames("id") {
                 shouldBe("bc") { id > 0 }
                 spec(ShouldBeGreaterThan(targetFun = {id},greaterThan = 0,fieldNameInMessage = "ID"))
