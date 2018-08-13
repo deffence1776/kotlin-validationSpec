@@ -8,7 +8,7 @@ open class ShouldBeGreaterThan<T>(
     : FieldValidationSpec<T, Int>(
         ShouldBeGreaterThan::class.java.name //specName
         ,targetFun
-        , { field-> field > greaterThan },//validation logi
+        , { field-> field > greaterThan },//validation logic
         { "$fieldNameInMessage should be greater than $greaterThan." }//message
 )
 

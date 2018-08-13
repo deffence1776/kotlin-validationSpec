@@ -71,17 +71,22 @@ fun main(args: Array<String>) {
 
 ## Spec Object
 
+Reusable validation logic and message.   
+You can create your own Spec for your Domain.
+
 ```kotlin
 
 open class ShouldBeGreaterThan<T>(
         targetFun: T.()->Int, //function to get target field of target Type
-        fieldNameInMessage: String,//parameters for validation logic and message
+        
+        //parameters for validation logic and message
+        fieldNameInMessage: String,
         greaterThan: Int
     )
     : FieldValidationSpec<T, Int>(
         ShouldBeGreaterThan::class.java.name //specName
         ,targetFun
-        , { field-> field > greaterThan },//validation logi
+        , { field-> field > greaterThan },//assertion function
         { "$fieldNameInMessage should be greater than $greaterThan." }//message
 )
 
@@ -96,7 +101,7 @@ internal class ValidatorPerformanceTest : StringSpec({
 
     data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
 
-    "10,000 times validation average within 10 milliseconds" {
+    "10,000 times validation" {
         //spec usually create once
         val simpleSpec = validatorSpec<TestUser> {
             fieldNames("id") {
