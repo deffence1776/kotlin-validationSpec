@@ -73,9 +73,9 @@ class Validator<T> internal constructor(private val specs: MutableList<Validatio
 
         val t = target as Any
         val type = t::class.java
-        val propetyNames = type.declaredFields.toSet().map { it.name }
+        val propertyNames = type.declaredFields.toSet().map { it.name }
         registeredFieldNamesSet.forEach { registeredName ->
-            require(propetyNames.contains(registeredName)) { "target Type [${type.name} ] doesn't has property named [$registeredName]. correct property Names $propetyNames" }
+            require(propertyNames.contains(registeredName)) { "target Type [${type.name} ] doesn't has property named [$registeredName]. correct property Names $propertyNames" }
         }
     }
 }

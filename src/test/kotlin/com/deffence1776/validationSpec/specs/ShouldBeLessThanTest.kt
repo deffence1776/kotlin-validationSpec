@@ -4,10 +4,6 @@ import com.deffence1776.validationSpec.validatorSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-
-
-
-
 internal class ShouldBeLessThanTest : StringSpec({
 
     data class SpecTestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")

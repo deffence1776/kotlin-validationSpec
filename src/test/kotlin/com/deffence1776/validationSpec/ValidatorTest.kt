@@ -1,6 +1,7 @@
 package com.deffence1776.validationSpec
 
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
 private data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
@@ -84,9 +85,9 @@ internal class ValidatorTest : StringSpec({
                 shouldBe { id > 0 }
             }
             fieldNames("name") {
-                shouldBe { name.isNotBlank()  }
+                shouldBe { name.isNotBlank() }
             }
-            fieldNames("password","confirmPassword") {
+            fieldNames("password", "confirmPassword") {
                 shouldBe { password != confirmPassword }
             }
         }
@@ -106,7 +107,39 @@ internal class ValidatorTest : StringSpec({
 
         result.errors[2].also {
             it.errorMessage shouldBe defaultMessage
-            it.fieldNames shouldBe listOf("password","confirmPassword")
+            it.fieldNames shouldBe listOf("password", "confirmPassword")
         }
+    }
+
+    "checkFieldNames method works" {
+        val validSpec = validatorSpec<TestUser> {
+            fieldNames("id") {
+                shouldBe { id > 0 }
+            }
+            fieldNames("name") {
+                shouldBe { name.isNotBlank() }
+            }
+            fieldNames("password", "confirmPassword") {
+                shouldBe { password != confirmPassword }
+            }
+        }
+
+        //throw no Exception
+        validSpec.checkFieldNames(TestUser())
+
+        val invalidSpec = validatorSpec<TestUser> {
+            fieldNames("idX") {
+                shouldBe { id > 0 }
+            }
+            fieldNames("nameX") {
+                shouldBe { name.isNotBlank() }
+            }
+            fieldNames("passwordX", "confirmPassword") {
+                shouldBe { password != confirmPassword }
+            }
+        }
+
+        shouldThrow<IllegalArgumentException> { invalidSpec.checkFieldNames(TestUser()) }
+
     }
 })
