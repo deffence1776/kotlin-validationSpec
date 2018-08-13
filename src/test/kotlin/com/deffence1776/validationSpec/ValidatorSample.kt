@@ -1,7 +1,7 @@
-package com.deffence1776.validationSpec
+package com.deffence1776.validationspec
 
-import com.deffence1776.validationSpec.specs.ShouldBeInRange
-import com.deffence1776.validationSpec.specs.ShouldNotBeBlank
+import com.deffence1776.validationspec.specs.ShouldBeInRange
+import com.deffence1776.validationspec.specs.ShouldNotBeBlank
 
 //target for validation
 data class SampleUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")

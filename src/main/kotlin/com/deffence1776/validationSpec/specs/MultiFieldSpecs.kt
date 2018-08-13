@@ -1,4 +1,4 @@
-package com.deffence1776.validationSpec.specs
+package com.deffence1776.validationspec.specs
 
 open class ShouldBeEqualsTwoValue<T>(targetFun:T.()-> Pair<Any,Any>, fieldNameInMessage1: String, fieldNameInMessage2: String) :
         FieldValidationSpec<T, Pair<Any, Any>>(

@@ -1,7 +1,7 @@
-package com.deffence1776.validationSpec
+package com.deffence1776.validationspec
 
-import com.deffence1776.validationSpec.specs.ShouldBeGreaterThan
-import com.deffence1776.validationSpec.specs.ShouldNotBeBlank
+import com.deffence1776.validationspec.specs.ShouldBeGreaterThan
+import com.deffence1776.validationspec.specs.ShouldNotBeBlank
 import io.kotlintest.matchers.doubles.shouldBeLessThan
 import io.kotlintest.specs.StringSpec
 

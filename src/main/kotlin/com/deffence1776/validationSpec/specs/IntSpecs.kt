@@ -1,4 +1,4 @@
-package com.deffence1776.validationSpec.specs
+package com.deffence1776.validationspec.specs
 
 open class ShouldBeGreaterThan<T>(
         targetFun: T.()->Int, //function to get target field of target Type

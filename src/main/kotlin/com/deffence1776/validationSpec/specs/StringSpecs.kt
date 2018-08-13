@@ -1,4 +1,4 @@
-package com.deffence1776.validationSpec.specs
+package com.deffence1776.validationspec.specs
 
 open class ShouldNotBeBlank<T>(targetFun:T.()->String, fieldNameInMessage: String)
     : FieldValidationSpec<T, String>(

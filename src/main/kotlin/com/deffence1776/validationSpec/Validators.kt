@@ -1,7 +1,7 @@
-package com.deffence1776.validationSpec
+package com.deffence1776.validationspec
 
-import com.deffence1776.validationSpec.specs.FieldValidationSpec
-import com.deffence1776.validationSpec.specs.ValidationSpec
+import com.deffence1776.validationspec.specs.FieldValidationSpec
+import com.deffence1776.validationspec.specs.ValidationSpec
 
 
 fun <T> defineSpecs(block: Validator<T>.() -> Unit): Validator<T> {

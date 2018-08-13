@@ -1,4 +1,4 @@
-package com.deffence1776.validationSpec
+package com.deffence1776.validationspec
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec

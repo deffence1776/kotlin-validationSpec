@@ -1,4 +1,4 @@
-package com.deffence1776.validationSpec
+package com.deffence1776.validationspec
 
 data class ValidationError(val specName:String,val errorMessage: String, val fieldNames: List<String>)
 

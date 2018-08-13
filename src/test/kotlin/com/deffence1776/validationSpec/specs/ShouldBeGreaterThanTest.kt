@@ -1,7 +1,7 @@
-package com.deffence1776.validationSpec.specs
+package com.deffence1776.validationspec.specs
 
 
-import com.deffence1776.validationSpec.defineSpecs
+import com.deffence1776.validationspec.defineSpecs
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

@@ -1,4 +1,4 @@
-package com.deffence1776.validationSpec.specs
+package com.deffence1776.validationspec.specs
 
 open class ValidationSpec<T>(val specName:String =""
                             ,val fieldNames: List<String>,
