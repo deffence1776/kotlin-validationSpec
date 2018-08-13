@@ -124,7 +124,7 @@ internal class ValidatorPerformanceTest : StringSpec({
 
         val result = (1..10).map { measureDuration(f) }
 
-        println(result) //[13, 8, 8, 5, 4, 14, 2, 2, 2, 2]
+        println(result) //example [13, 8, 8, 5, 4, 14, 2, 2, 2, 2]
         result.average().shouldBeLessThan(10.0)
 
     }
