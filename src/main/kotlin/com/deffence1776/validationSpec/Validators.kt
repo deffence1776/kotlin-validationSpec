@@ -14,8 +14,9 @@ fun <T> validatorSpec(block: Validator<T>.() -> Unit): Validator<T> {
  * Validator clas。
  * stocks validation specs and validateAll
  */
-class Validator<T> internal constructor(private val specs: MutableList<ValidationSpec<T>> = mutableListOf()
-                   , private val fieldNames: List<String> = emptyList()) {
+class Validator<T> internal constructor(
+         private  val specs: MutableList<ValidationSpec<T>> = mutableListOf()
+                   ,private  val  fieldNames: List<String> = emptyList()) {
 
     fun shouldBe(specName:String="",assertionFun: T.() -> Boolean): ValidationSpec<T> {
         val spec = ValidationSpec(specName = specName, assertionFun = assertionFun, fieldNames = fieldNames)
@@ -63,18 +64,7 @@ class Validator<T> internal constructor(private val specs: MutableList<Validatio
 
     fun validateUntilFirst(target:T)= ValidationErrors(execValidate(target=target,validateAll=false))
 
+    fun registeredFields()=specs.map { it.fieldNames }.flatten().distinct()
 
-    /**
-     * check registered field names for test
-     */
-    fun checkFieldNames(target: T) {
-        val registeredFieldNamesSet = specs.map { it.fieldNames }.flatten().toSet()
-
-        val t = target as Any
-        val type = t::class.java
-        val propertyNames = type.declaredFields.toSet().map { it.name }
-        registeredFieldNamesSet.forEach { registeredName ->
-            require(propertyNames.contains(registeredName)) { "target Type [${type.name} ] doesn't has property named [$registeredName]. correct property Names $propertyNames" }
-        }
-    }
+    fun registeredSpecNames()=specs.map { it.specName }.filter { it != "" }.distinct()
 }

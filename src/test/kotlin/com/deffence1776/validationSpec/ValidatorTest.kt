@@ -1,10 +1,11 @@
 package com.deffence1776.validationSpec
 
+import com.deffence1776.validationSpec.specs.ValidationSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
-private data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
+data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
 
 private const val defaultMessage = "validation failed"
 
@@ -67,6 +68,7 @@ internal class ValidatorTest : StringSpec({
         }
 
         val result = simpleSpec.validateUntilFirst(TestUser())
+        simpleSpec.registeredSpecNames() shouldBe listOf("id size")
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 1
         result.errors[0].also {
@@ -113,6 +115,8 @@ internal class ValidatorTest : StringSpec({
         }
 
         val result = simpleSpec.validateAll(TestUser())
+
+        simpleSpec.registeredFields() shouldBe listOf("id","name","password","confirmPassword")
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 3
         result.errors[0].also {
@@ -129,37 +133,9 @@ internal class ValidatorTest : StringSpec({
             it.errorMessage shouldBe defaultMessage
             it.fieldNames shouldBe listOf("password", "confirmPassword")
         }
-    }
 
-    "checkFieldNames method works" {
-        val validSpec = validatorSpec<TestUser> {
-            fieldNames("id") {
-                shouldBe { id > 0 }
-            }
-            fieldNames("name") {
-                shouldBe { name.isNotBlank() }
-            }
-            fieldNames("password", "confirmPassword") {
-                shouldBe { password != confirmPassword }
-            }
-        }
 
-        //throw no Exception
-        validSpec.checkFieldNames(TestUser())
-
-        val invalidSpec = validatorSpec<TestUser> {
-            fieldNames("idX") {
-                shouldBe { id > 0 }
-            }
-            fieldNames("nameX") {
-                shouldBe { name.isNotBlank() }
-            }
-            fieldNames("passwordX", "confirmPassword") {
-                shouldBe { password != confirmPassword }
-            }
-        }
-
-        shouldThrow<IllegalArgumentException> { invalidSpec.checkFieldNames(TestUser()) }
 
     }
+
 })
