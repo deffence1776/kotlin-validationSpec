@@ -3,9 +3,9 @@ package com.deffence1776.validationSpec
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
+private data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
 
-const val defaultMessage = "validation failed"
+private const val defaultMessage = "validation failed"
 
 internal class ValidatorTest : StringSpec({
 
@@ -78,7 +78,7 @@ internal class ValidatorTest : StringSpec({
         }
     }
 
-    "field spec works" {
+    "fieldNames can be registered" {
         val simpleSpec = validatorSpec<TestUser> {
             fieldNames("id") {
                 shouldBe { id > 0 }
@@ -86,11 +86,14 @@ internal class ValidatorTest : StringSpec({
             fieldNames("name") {
                 shouldBe { name.isNotBlank()  }
             }
+            fieldNames("password","confirmPassword") {
+                shouldBe { password != confirmPassword }
+            }
         }
 
         val result = simpleSpec.validate(TestUser())
         result.hasErrors() shouldBe true
-        result.errors.size shouldBe 2
+        result.errors.size shouldBe 3
         result.errors[0].also {
             it.errorMessage shouldBe defaultMessage
             it.fieldNames shouldBe listOf("id")
@@ -99,6 +102,11 @@ internal class ValidatorTest : StringSpec({
         result.errors[1].also {
             it.errorMessage shouldBe defaultMessage
             it.fieldNames shouldBe listOf("name")
+        }
+
+        result.errors[2].also {
+            it.errorMessage shouldBe defaultMessage
+            it.fieldNames shouldBe listOf("password","confirmPassword")
         }
     }
 })

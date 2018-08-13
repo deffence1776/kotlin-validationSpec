@@ -1,5 +1,8 @@
 package com.deffence1776.validationSpec
 
+import com.deffence1776.validationSpec.specs.FieldValidationSpec
+import com.deffence1776.validationSpec.specs.ValidationSpec
+
 
 fun <T> validatorSpec(block: Validator<T>.() -> Unit): Validator<T> {
     val v = Validator<T>()
@@ -18,7 +21,7 @@ class Validator<T> internal constructor(private val specs: MutableList<Validatio
      *
      */
     fun shouldBe(specName:String="",assertionFun: T.() -> Boolean): ValidationSpec<T> {
-        val spec = ValidationSpec(specName=specName ,assertionFun = assertionFun, fieldNames = fieldNames)
+        val spec = ValidationSpec(specName = specName, assertionFun = assertionFun, fieldNames = fieldNames)
         specs.add(spec)
         return spec
     }
@@ -26,13 +29,17 @@ class Validator<T> internal constructor(private val specs: MutableList<Validatio
     /**
      *
      */
-    fun <F> spec(specName:String,fieldSpec: FieldValidationSpec<T, F>) {
-        val resistorSpecName = if(""==specName) fieldSpec.specName else specName
-        val spec = ValidationSpec(specName=resistorSpecName,assertionFun = fieldSpec.assertionFun(), fieldNames = fieldNames)
-        spec.errorMessage(fieldSpec.msgFun)
-        specs.add(spec)
+    fun <F> spec(specName:String, fieldSpec: FieldValidationSpec<T, F>) {
+       val validationSpec = fieldSpec.toValidationSpec(newSpecName = specName,fieldNames = fieldNames)
+        specs.add(validationSpec)
     }
 
+    /**
+     *
+     */
+    fun <F> spec( fieldSpec: FieldValidationSpec<T, F>) {
+        spec("",fieldSpec)
+    }
 
     /**
      * grouping specs by field names

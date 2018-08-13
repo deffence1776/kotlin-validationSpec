@@ -1,4 +1,4 @@
-package com.deffence1776.validationSpec
+package com.deffence1776.validationSpec.specs
 
 open class ValidationSpec<T>(val specName:String =""
                             ,val fieldNames: List<String>,
@@ -7,11 +7,7 @@ open class ValidationSpec<T>(val specName:String =""
 
     fun showMessage(target:T):String {
         val f = msgFun
-        if (null == f) {
-            return  "validation failed"
-        } else {
-            return f.invoke(target)
-        }
+        return f?.invoke(target) ?: "validation failed"
     }
 
     fun isValid(target:T):Boolean =assertionFun.invoke(target)
@@ -22,9 +18,16 @@ open class ValidationSpec<T>(val specName:String =""
     }
 }
 
-open class FieldValidationSpec<T, F>(val specName:String =""
+open class FieldValidationSpec<T, F>(val specName:String
                                      , private val targetFun:T.()->F
                                      , private val assertionFun: T.(f: F) -> Boolean
                                      , val msgFun: (target: T) -> String) {
-    fun assertionFun(): T.() -> Boolean = { assertionFun.invoke(this, targetFun.invoke(this)) }
+    private fun assertionFun(): T.() -> Boolean = { assertionFun.invoke(this, targetFun.invoke(this)) }
+
+    fun toValidationSpec(newSpecName:String,fieldNames: List<String>):ValidationSpec<T>{
+        val specNameToRegister = if(""==newSpecName) specName else newSpecName
+        val validationSpec = ValidationSpec(specName = specNameToRegister, assertionFun = assertionFun(), fieldNames = fieldNames)
+        validationSpec.errorMessage(msgFun)
+        return validationSpec
+    }
 }
