@@ -11,7 +11,7 @@ internal class ValidatorPerformanceTest : StringSpec({
 
     "10,000 times validation average within 10 milliseconds" {
         //spec usually create once
-        val simpleSpec = validatorSpec<TestUser> {
+        val simpleSpec = defineSpecs<TestUser> {
             fieldNames("id") {
                 shouldBe("bc") { id > 0 }
                 spec(ShouldBeGreaterThan(targetFun = {id},greaterThan = 0,fieldNameInMessage = "ID"))

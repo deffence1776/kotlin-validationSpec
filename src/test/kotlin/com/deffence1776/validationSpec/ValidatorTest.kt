@@ -1,8 +1,6 @@
 package com.deffence1776.validationSpec
 
-import com.deffence1776.validationSpec.specs.ValidationSpec
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
 data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
@@ -13,7 +11,7 @@ internal class ValidatorTest : StringSpec({
 
 
     "No error returns when object is valid" {
-        val simpleSpec = validatorSpec<TestUser> {
+        val simpleSpec = defineSpecs<TestUser> {
             shouldBe { id > 0 }
         }
 
@@ -23,7 +21,7 @@ internal class ValidatorTest : StringSpec({
 
 
     "manual validation works and default message return" {
-        val simpleSpec = validatorSpec<TestUser> {
+        val simpleSpec = defineSpecs<TestUser> {
             shouldBe { id > 0 }
         }
 
@@ -38,7 +36,7 @@ internal class ValidatorTest : StringSpec({
     }
 
     "multi specs works" {
-        val simpleSpec = validatorSpec<TestUser> {
+        val simpleSpec = defineSpecs<TestUser> {
             shouldBe("id size") { id > 0 }
             shouldBe { name.isNotBlank() }
 
@@ -61,7 +59,7 @@ internal class ValidatorTest : StringSpec({
     }
 
     "multi specs works stop WHen error occured" {
-        val simpleSpec = validatorSpec<TestUser> {
+        val simpleSpec = defineSpecs<TestUser> {
             shouldBe("id size") { id > 0 }
             shouldBe { name.isNotBlank() }
 
@@ -81,7 +79,7 @@ internal class ValidatorTest : StringSpec({
 
 
     "specified message returns.validateAll same as registered order" {
-        val testSpec = validatorSpec<TestUser> {
+        val testSpec = defineSpecs<TestUser> {
             shouldBe { id > 0 }.errorMessage { "id should greater than zero." }
             shouldBe { name.isNotBlank() }.errorMessage { "name should not blank." }
         }
@@ -102,7 +100,7 @@ internal class ValidatorTest : StringSpec({
     }
 
     "fieldNames can be registered" {
-        val simpleSpec = validatorSpec<TestUser> {
+        val simpleSpec = defineSpecs<TestUser> {
             fieldNames("id") {
                 shouldBe { id > 0 }
             }

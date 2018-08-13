@@ -4,7 +4,7 @@ import com.deffence1776.validationSpec.specs.FieldValidationSpec
 import com.deffence1776.validationSpec.specs.ValidationSpec
 
 
-fun <T> validatorSpec(block: Validator<T>.() -> Unit): Validator<T> {
+fun <T> defineSpecs(block: Validator<T>.() -> Unit): Validator<T> {
     val v = Validator<T>()
     block.invoke(v)
     return v

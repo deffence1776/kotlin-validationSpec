@@ -7,7 +7,7 @@ import com.deffence1776.validationSpec.specs.ShouldNotBeBlank
 data class SampleUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
 
 //declare spec
-val sampleValidationSpec = validatorSpec<SampleUser> {
+val sampleValidationSpec = defineSpecs<SampleUser> {
     //most simple. functional style
     shouldBe { id > 0 }
 

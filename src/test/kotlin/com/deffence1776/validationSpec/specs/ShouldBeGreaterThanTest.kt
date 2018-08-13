@@ -1,7 +1,7 @@
 package com.deffence1776.validationSpec.specs
 
 
-import com.deffence1776.validationSpec.validatorSpec
+import com.deffence1776.validationSpec.defineSpecs
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
@@ -13,7 +13,7 @@ internal class ShouldBeGreaterThanTest : StringSpec({
 
 
     "spec works "{
-        val testSpec = validatorSpec<SpecTestUser> {
+        val testSpec = defineSpecs<SpecTestUser> {
             fieldNames("id") {
                 spec(ShouldBeGreaterThan(targetFun = { id }, greaterThan = 0, fieldNameInMessage = "ID"))
                 spec("special spec", ShouldBeGreaterThan(targetFun = { id }, greaterThan = 0, fieldNameInMessage = "ID"))

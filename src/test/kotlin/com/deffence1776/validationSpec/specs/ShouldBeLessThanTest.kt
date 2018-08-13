@@ -1,6 +1,6 @@
 package com.deffence1776.validationSpec.specs
 
-import com.deffence1776.validationSpec.validatorSpec
+import com.deffence1776.validationSpec.defineSpecs
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
@@ -9,7 +9,7 @@ internal class ShouldBeLessThanTest : StringSpec({
     data class SpecTestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
 
     "spec works "{
-        val simpleSpec = validatorSpec<SpecTestUser> {
+        val simpleSpec = defineSpecs<SpecTestUser> {
             fieldNames("id") {
                 spec(ShouldBeLessThan(targetFun = { id }, lessThan = 10, msgFieldName = "ID"))
                 spec("special spec", ShouldBeLessThan(targetFun = { id }, lessThan = 10, msgFieldName = "ID"))

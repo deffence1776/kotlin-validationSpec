@@ -1,6 +1,6 @@
 package com.deffence1776.validationSpec.specs
 
-import com.deffence1776.validationSpec.validatorSpec
+import com.deffence1776.validationSpec.defineSpecs
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
@@ -9,7 +9,7 @@ internal class ShouldBeAllUniqueTest : StringSpec({
     data class SpecTestModel(val value1:Int,val value2:Int,val value3:Int)
 
     "spec works "{
-        val simpleSpec = validatorSpec<SpecTestModel> {
+        val simpleSpec = defineSpecs<SpecTestModel> {
             fieldNames("value1","value2","value3") {
                 spec(ShouldBeAllUnique(targetFun ={listOf(value1,value2,value3)},fieldsNameInMessage = "values"))
             }
