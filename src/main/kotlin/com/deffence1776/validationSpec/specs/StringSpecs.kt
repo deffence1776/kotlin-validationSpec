@@ -1,19 +1,16 @@
 package com.deffence1776.validationSpec.specs
 
-private val shouldNotBeBlank = ShouldNotBeBlank::class.java.name
-
 open class ShouldNotBeBlank<T>(targetFun:T.()->String, fieldNameInMessage: String)
     : FieldValidationSpec<T, String>(
-        shouldNotBeBlank
+        "com.deffence1776.validationSpec.specs.ShouldNotBeBlank"
         ,targetFun,
         { field -> field.isNotBlank() },
         { "$fieldNameInMessage should not be blank." }
 )
 
-private val shouldBeNumberFormat = ShouldBeNumberFormat::class.java.name
 open class ShouldBeNumberFormat<T>(targetFun:T.()-> String, fieldNameInMessage: String)
     : FieldValidationSpec<T, String>(
-        shouldBeNumberFormat
+        "com.deffence1776.validationSpec.specs.ShouldBeNumberFormat"
         ,targetFun,
         { field -> field.toIntOrNull() != null },
         { "$fieldNameInMessage should be Number." }
