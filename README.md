@@ -34,7 +34,7 @@ val sampleValidationSpec = validatorSpec<SampleUser> {
     fieldNames("name") {
         spec(ShouldNotBeBlank(targetFun = { name }, fieldNameInMessage = "NAME"))
 
-        //specify specify specName
+        // specify specName
         spec("name length check", ShouldBeInRange(targetFun = { name.length }, range = 1..10, fieldNameInMessage = "NAME"))
     }
 }
@@ -68,6 +68,9 @@ fun main(args: Array<String>) {
 
 
 ```
+
+* [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationSpec/ValidatorSample.kt) 
+
 
 ## Spec Object
 

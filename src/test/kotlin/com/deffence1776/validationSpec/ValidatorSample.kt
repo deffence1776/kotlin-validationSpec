@@ -29,7 +29,7 @@ val sampleValidationSpec = validatorSpec<SampleUser> {
     fieldNames("name") {
         spec(ShouldNotBeBlank(targetFun = { name }, fieldNameInMessage = "NAME"))
 
-        //specify specify specName
+        // specify specName
         spec("name length check", ShouldBeInRange(targetFun = { name.length }, range = 1..10, fieldNameInMessage = "NAME"))
     }
 }
