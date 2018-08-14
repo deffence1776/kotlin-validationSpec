@@ -2,7 +2,7 @@ package com.deffence1776.validationspec.specs
 
 open class ShouldNotBeBlank<T>(targetFun:T.()->String, fieldNameInMessage: String)
     : FieldValidationSpec<T, String>(
-        "com.deffence1776.validationSpec.specs.ShouldNotBeBlank"
+        "com.deffence1776.validationspec.specs.ShouldNotBeBlank"
         ,targetFun,
         { field -> field.isNotBlank() },
         { "$fieldNameInMessage should not be blank." }
@@ -10,7 +10,7 @@ open class ShouldNotBeBlank<T>(targetFun:T.()->String, fieldNameInMessage: Strin
 
 open class ShouldBeNumberFormat<T>(targetFun:T.()-> String, fieldNameInMessage: String)
     : FieldValidationSpec<T, String>(
-        "com.deffence1776.validationSpec.specs.ShouldBeNumberFormat"
+        "com.deffence1776.validationspec.specs.ShouldBeNumberFormat"
         ,targetFun,
         { field -> field.toIntOrNull() != null },
         { "$fieldNameInMessage should be Number." }

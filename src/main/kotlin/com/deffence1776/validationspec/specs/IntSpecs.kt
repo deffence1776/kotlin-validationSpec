@@ -6,7 +6,7 @@ open class ShouldBeGreaterThan<T>(
         greaterThan: Int
     )
     : FieldValidationSpec<T, Int>(
-        "com.deffence1776.validationSpec.specs.ShouldBeGreaterThan" //specName
+        "com.deffence1776.validationspec.specs.ShouldBeGreaterThan" //specName
         ,targetFun
         , { field-> field > greaterThan },//validation logic
         { "$fieldNameInMessage should be greater than $greaterThan." }//message
@@ -14,7 +14,7 @@ open class ShouldBeGreaterThan<T>(
 
 open class ShouldBeLessThan<T>(targetFun:T.()-> Int, msgFieldName: String, lessThan: Int)
     : FieldValidationSpec<T, Int>(
-        "com.deffence1776.validationSpec.specs.ShouldBeLessThan"
+        "com.deffence1776.validationspec.specs.ShouldBeLessThan"
         ,targetFun
         , {  field-> field  < lessThan },
         { "$msgFieldName should be  less than $lessThan." }
@@ -22,7 +22,7 @@ open class ShouldBeLessThan<T>(targetFun:T.()-> Int, msgFieldName: String, lessT
 
 open class ShouldBeInRange<T>(targetFun:T.()-> Int, fieldNameInMessage: String, range: IntRange)
     : FieldValidationSpec<T, Int>(
-        "com.deffence1776.validationSpec.specs.ShouldBeInRange"
+        "com.deffence1776.validationspec.specs.ShouldBeInRange"
         ,targetFun
         , {  field -> field in range },
         { "$fieldNameInMessage should be in range $range." }
