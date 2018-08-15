@@ -70,7 +70,7 @@ fun main(args: Array<String>) {
 
 ```
 
-* see [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationSpec/samples/ValidatorSample.kt) 
+* see [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationspec/samples/ValidatorSample.kt) 
 
 
 ## Reuse specs
@@ -125,6 +125,10 @@ fun main(args: Array<String>) {
 }
 
 ```
+
+
+* see [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationspec/samples/PrimitiveTypeSpecSample.kt) 
+
 ## Complex Object
 
 Here is a sample code for validating a complex object for your domain.  
@@ -187,6 +191,10 @@ fun main(args: Array<String>) {
 }
 
  ```
+
+
+* see [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationspec/samples/ComplexObjectValidationSample.kt) 
+
 
 ## Performance
 
