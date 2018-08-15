@@ -291,30 +291,30 @@ internal class ValidatorPerformanceTest : StringSpec({
         }
 
           println("fast:$fastResult") //example fast:[8, 2, 1, 2, 3, 3, 0, 1, 0, 1]
-               println("fast average:${fastResult.average()}")//example fast average:2.1
-               fastResult.average().shouldBeLessThan(5.0)
+          println("fast average:${fastResult.average()}")//example fast average:2.1
+          fastResult.average().shouldBeLessThan(5.0)
        
        
-               val slowResult = measureFunction(10,10000){
-                   slowSpec.validateAll(validationTarget)
-               }
+          val slowResult = measureFunction(10,10000){
+              slowSpec.validateAll(validationTarget)
+          }
        
-               println("slow:$slowResult") //example slow:[51, 10, 7, 10, 6, 4, 9, 11, 9, 4]
-               println("slow average:${slowResult.average()}")//example slow average:12.1
-               slowResult.average().shouldBeLessThan(25.0)
+          println("slow:$slowResult") //example slow:[51, 10, 7, 10, 6, 4, 9, 11, 9, 4]
+          println("slow average:${slowResult.average()}")//example slow average:12.1
+          slowResult.average().shouldBeLessThan(25.0)
        
        
-               val validatorFactory = Validation.buildDefaultValidatorFactory()
-               val validator = validatorFactory.validator
+          val validatorFactory = Validation.buildDefaultValidatorFactory()
+          val validator = validatorFactory.validator
        
-               val hibernateResult = measureFunction(10,10000){
-                   validator.validate(validationTarget)
-               }
+          val hibernateResult = measureFunction(10,10000){
+              validator.validate(validationTarget)
+          }
        
-               println("hibernate:$hibernateResult")//example [354, 168, 81, 37, 35, 37, 61, 54, 25, 34]
-               println("hibernate average:${hibernateResult.average()}")//example 88.6
+          println("hibernate:$hibernateResult")//example [354, 168, 81, 37, 35, 37, 61, 54, 25, 34]
+          println("hibernate average:${hibernateResult.average()}")//example 88.6
        
-               slowResult.average().shouldBeLessThan(hibernateResult.average())
+          slowResult.average().shouldBeLessThan(hibernateResult.average())
 
     }
 })
