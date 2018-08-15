@@ -138,8 +138,6 @@ internal class ValidatorTest : StringSpec({
 
 
     "nested Validation" {
-
-
         val idSpec = defineSpecs<Int> {
             shouldBe("id range rule") { this in 1..100 }.errorMessage { "id should be in 1..1000." }
         }
@@ -158,9 +156,9 @@ internal class ValidatorTest : StringSpec({
 
         val userSpec = defineSpecs<TestUser> {
 
-            confirm({id},{idSpec})
+            confirm({id},idSpec)
 
-            confirm("name rule",{name},{nameSpec})
+            confirm("name rule",{name},nameSpec)
 
             fieldNames("password") {
                 confirm({password},{passwordSpec})
@@ -190,6 +188,5 @@ internal class ValidatorTest : StringSpec({
             it.fieldNames shouldBe listOf("password","password.password")
         }
     }
-
 
 })

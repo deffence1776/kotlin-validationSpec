@@ -63,7 +63,7 @@ internal class ValidatorPerformanceTest : StringSpec({
 
         println("slow:$slowResult") //example [72, 31, 13, 13, 13, 17, 21, 17, 15, 14]
         println("slow average:${slowResult.average()}")//example 22.6
-        slowResult.average().shouldBeLessThan(20.0)
+        slowResult.average().shouldBeLessThan(25.0)
 
 
         val validatorFactory = Validation.buildDefaultValidatorFactory()
