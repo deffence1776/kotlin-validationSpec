@@ -6,7 +6,7 @@ import com.deffence1776.validationspec.defineSpecs
 //Value Object With private field
 class UserId(private val value: String) {
     companion object {
-        //public val
+        //public val. define spec at companion object to access private properties
         val spec = defineSpecs<UserId> {
             shouldBe("user id length rule") { value.length == 5 }.errorMessage { "user id's length should be 5" }
         }
@@ -37,12 +37,18 @@ class User(private val userId: UserId, private val userName: UserName) {
             }
         }
     }
+
+    //you can define validate method
+    fun validate()=spec.validateAll(this)
 }
 
 fun main(args: Array<String>) {
 
     val user = User(UserId("abc"), UserName("12345678901"))
     val result = User.spec.validateAll(user)
+    //or
+    //val result = user.validate()
+
     println(result)
 
 }

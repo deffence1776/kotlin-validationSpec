@@ -1,13 +1,17 @@
 Kotlin-validationSpec
 ==========================
 
-kotlin Field validator.  
+kotlin functional field validator.  
+depends on only Kotlin stdlib.
+
+  
+Inspired by  [Clojure Spec](https://clojure.org/guides/spec)   
 Inspired by  [Kotlin Validation](https://github.com/kamedon/Validation) 
 
 
 ## Getting Started
 
-first create validation spec for type.
+First, create validation spec for type.
 
 ```kotlin
 
@@ -43,7 +47,7 @@ val sampleValidationSpec = defineSpecs<SampleUser> {
 
 ```
 
-then, validate object.
+Then, validate object.
 
 ```kotlin
 
@@ -53,89 +57,218 @@ fun main(args: Array<String>) {
     //validate All spec
     val result: ValidationErrors = sampleValidationSpec.validateAll(sampleUser)
     println(result)
-//    ValidationErrors(errors=[
-//        ValidationError(specName=, errorMessage=validation failed, fieldNames=[])
+//    ValidationErrors(errors=[ValidationError(specName=, errorMessage=validation failed, fieldNames=[])
 //        , ValidationError(specName=password not blank, errorMessage=validation failed, fieldNames=[password])
-//        , ValidationError(specName=password length range, errorMessage=validation failed, fieldNames=[password])
-//        , ValidationError(specName=com.deffence1776.validationSpec.specs.ShouldNotBeBlank, errorMessage=NAME should not be blank., fieldNames=[name])
-//        , ValidationError(specName=name length check, errorMessage=NAME should be in range 1..10., fieldNames=[name])])
-//
+//        , ValidationError(specName=password length range, errorMessage=validation failed, fieldNames=[password])])
 
 
-    //validate until first error occurred
+    //validate until error occurred
     val result2: ValidationErrors = sampleValidationSpec.validateUntilFirst(sampleUser)
     println(result2)
 //    ValidationErrors(errors=[ValidationError(specName=, errorMessage=validation failed, fieldNames=[])])
 }
 
-
 ```
 
-* see [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationSpec/ValidatorSample.kt) 
+* see [sample](https://github.com/deffence1776/kotlin-validationSpec/blob/master/src/test/kotlin/com/deffence1776/validationSpec/samples/ValidatorSample.kt) 
 
 
-## Spec Object
+## Reuse specs
+Defied specs are reusable.  
+Use 「confirm」method.   
 
-Reusable validation logic and message.   
-You can create your own Spec for your Domain.
-
+For example, define for primitive types.
 ```kotlin
 
-open class ShouldBeGreaterThan<T>(
-        targetFun: T.()->Int, //function to get target field of target Type
-        
-        //parameters for validation logic and message
-        fieldNameInMessage: String,
-        greaterThan: Int
-    )
-    : FieldValidationSpec<T, Int>(
-        ShouldBeGreaterThan::class.java.name //specName
-        ,targetFun
-        , { field-> field > greaterThan },//assertion function
-        { "$fieldNameInMessage should be greater than $greaterThan." }//message
-)
+//define spec for primitive type
+val strForNumberSpec = defineSpecs<String> {
+    shouldBe { this.isNotBlank() }
+    shouldBe { this.toIntOrNull() != null }
+}
+
+//if you want flexibility define 「spec function」
+fun shouldBeGreaterThan(fieldName: String, greaterThan: Int) = defineSpecs<Int> {
+    shouldBe { this > greaterThan }.errorMessage { "$fieldName should be greater than $greaterThan" }
+}
+```
+
+Then, use them in other spec definitions.
+
+```kotlin
+//then use confirm
+data class SampleModel(val id: Int = 0, val numStr: String = "")
+
+val sampleModelSpec = defineSpecs<SampleModel> {
+    fieldNames("id") {
+        confirm({ id }, shouldBeGreaterThan("ID", 0))
+
+        //if you want use target's propeties for parameter add block
+       // confirm({ id }, {shouldBeGreaterThan("ID", 0)})
+    }
+
+    fieldNames("numStr") {
+        confirm("strForNumberSpec rule",{ numStr }, strForNumberSpec)
+    }
+}
+```
+
+Then, execute validation.
+
+```kotlin
+fun main(args: Array<String>) {
+    val result = sampleModelSpec.validateAll(SampleModel())
+
+    println(result)
+//    ValidationErrors(errors=[ValidationError(specName=, errorMessage=ID should be greater than 0, fieldNames=[id])
+//    , ValidationError(specName=strForNumberSpec rule, errorMessage=validation failed, fieldNames=[numStr])
+//    , ValidationError(specName=strForNumberSpec rule, errorMessage=validation failed, fieldNames=[numStr])])
+}
 
 ```
+## Complex Object
+
+Here is a sample code for validating a complex object.  
+The object has nested and private property.
+
+ ```kotlin
+//Value Object With private field
+class UserId(private val value: String) {
+    companion object {
+        //public val. define spec at companion object to access private properties
+        val spec = defineSpecs<UserId> {
+            shouldBe("user id length rule") { value.length == 5 }.errorMessage { "user id's length should be 5" }
+        }
+    }
+}
+
+
+//Value Object With private field
+class UserName(private val value: String) {
+    companion object {
+        val spec = defineSpecs<UserName> {
+            shouldBe("user name length rule") { value.length in 1..10 }.errorMessage { "username's length should be in 1..10" }
+        }
+    }
+}
+
+//Immutable Entity
+class User(private val userId: UserId, private val userName: UserName) {
+    companion object {
+        //define spec for innerValue
+        val spec = defineSpecs<User> {
+            fieldNames("userId") {
+                confirm({ userId }, UserId.spec )
+            }
+
+            fieldNames("userName") {
+                confirm({ userName }, UserName.spec)
+            }
+        }
+    }
+    
+    //you can define validate method 
+    fun validate()=spec.validateAll(this)
+}
+
+fun main(args: Array<String>) {
+
+    val user = User(UserId("abc"), UserName("12345678901"))
+    val result = User.spec.validateAll(user)
+    //or 
+    //val result = user.validate()
+    
+    println(result)
+
+}
+
+ ```
 
 ## Performance
 
-not so bad.if validation logic is simple.
+Confirm method is slow.  
+But, still much faster than hibernate validator 
 
 ```kotlin
+
 internal class ValidatorPerformanceTest : StringSpec({
 
-    data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
+    data class TestUser(@get:Min(1)val id: Int = 0,
 
-    "10,000 times validation" {
+                        @get:Length(10) val name: String = "", val password: String = "", val confirmPassword: String = "")
+
+    "10,000 times validation average" {
+
+        fun shouldBeGreaterThan(fieldNameInmessage: String, greaterThan: Int) = defineSpecs<Int> {
+            shouldBe { this > greaterThan }.errorMessage { "$fieldNameInmessage should be greater than $greaterThan" }
+        }
+
+        fun shouldNotBeBlank(fieldNameInmessage: String) = defineSpecs<String> {
+            shouldBe { this.isNotBlank() }.errorMessage { "$fieldNameInmessage should not be blank." }
+        }
+
         //spec usually create once
-        val simpleSpec = defineSpecs<TestUser> {
+        val fastSpec = defineSpecs<TestUser> {
             fieldNames("id") {
-                shouldBe("bc") { id > 0 }
-                spec(ShouldBeGreaterThan(targetFun = {id},greaterThan = 0,fieldNameInMessage = "ID"))
-                spec(ShouldNotBeBlank(targetFun = {name},fieldNameInMessage = "NAME"))
-
+                shouldBe { id > 0 }.errorMessage { "ID should be greater than 0" }
+            }
+            fieldNames("name"){
+                shouldBe { name.isNotBlank() }.errorMessage { "NAME should not be blank." }
             }
         }
+
+        //confirm method is slow.but still much faster than hibernate validator
+        val slowSpec = defineSpecs<TestUser> {
+            fieldNames("id") {
+                confirm({ id }, shouldBeGreaterThan("ID", 0) )
+            }
+            fieldNames("name"){
+                confirm({ name },  shouldNotBeBlank("ID"))
+            }
+        }
+
 
         val validationTarget = TestUser()
-        val f = {
-            for (i in 1..10000) {
-                simpleSpec.validateAll(validationTarget)
-            }
+
+        val fastResult = measureFunction(10,10000){
+            fastSpec.validateAll(validationTarget)
         }
 
-        val result = (1..10).map { measureDuration(f) }
+        println("fast:$fastResult") //example [72, 31, 13, 13, 13, 17, 21, 17, 15, 14]
+        println("fast average:${fastResult.average()}")//example 22.6
+        fastResult.average().shouldBeLessThan(5.0)
 
-        println(result) //example [13, 8, 8, 5, 4, 14, 2, 2, 2, 2]
-        result.average().shouldBeLessThan(10.0)
+
+        val slowResult = measureFunction(10,10000){
+            slowSpec.validateAll(validationTarget)
+        }
+
+        println("slow:$slowResult") //example [72, 31, 13, 13, 13, 17, 21, 17, 15, 14]
+        println("slow average:${slowResult.average()}")//example 22.6
+        slowResult.average().shouldBeLessThan(20.0)
+
+
+        val validatorFactory = Validation.buildDefaultValidatorFactory()
+        val validator = validatorFactory.getValidator()
+
+        val hibernateResult = measureFunction(10,10000){
+            validator.validate(validationTarget)
+        }
+
+        println("hibernate:$hibernateResult")//example [354, 168, 81, 37, 35, 37, 61, 54, 25, 34]
+        println("hibernate average:${hibernateResult.average()}")//example 88.6
+
+        slowResult.average().shouldBeLessThan(hibernateResult.average())
 
     }
 })
 
-private fun measureDuration(f: () -> Unit): Long {
-    val start = System.currentTimeMillis()
-    f.invoke()
-    val end = System.currentTimeMillis()
-    return end - start
+fun measureFunction(measureTimes: Int, baseTimes: Int, f: () -> Unit) = (1..measureTimes).map {
+    measureTimeMillis {
+        for (i in 1..baseTimes) {
+            f.invoke()
+        }
+    }
 }
+
 ```
+
