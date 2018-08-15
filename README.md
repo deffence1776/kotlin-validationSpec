@@ -127,7 +127,7 @@ fun main(args: Array<String>) {
 ```
 ## Complex Object
 
-Here is a sample code for validating a complex object.  
+Here is a sample code for validating a complex object for your domain.  
 The object has nested and private property.
 
  ```kotlin
