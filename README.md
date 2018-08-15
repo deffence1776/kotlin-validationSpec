@@ -298,14 +298,13 @@ internal class ValidatorPerformanceTest : StringSpec({
         val slowResult = measureFunction(10,10000){
             slowSpec.validateAll(validationTarget)
         }
-
-        println("slow:$slowResult") //example [72, 31, 13, 13, 13, 17, 21, 17, 15, 14]
-        println("slow average:${slowResult.average()}")//example 22.6
-        slowResult.average().shouldBeLessThan(20.0)
+        println("slow:$slowResult") //example slow:[51, 10, 7, 10, 6, 4, 9, 11, 9, 4]
+        println("slow average:${slowResult.average()}")//example slow average:12.1
+        slowResult.average().shouldBeLessThan(25.0)
 
 
         val validatorFactory = Validation.buildDefaultValidatorFactory()
-        val validator = validatorFactory.getValidator()
+        val validator = validatorFactory.validator
 
         val hibernateResult = measureFunction(10,10000){
             validator.validate(validationTarget)
