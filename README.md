@@ -36,13 +36,7 @@ val sampleValidationSpec = defineSpecs<SampleUser> {
         shouldBe("password confirmPassword same") { password == confirmPassword }
     }
 
-    //reusable Spec Object.
-    fieldNames("name") {
-        spec(ShouldNotBeBlank(targetFun = { name }, fieldNameInMessage = "NAME"))
 
-        // specify specName
-        spec("name length check", ShouldBeInRange(targetFun = { name.length }, range = 1..10, fieldNameInMessage = "NAME"))
-    }
 }
 
 ```
