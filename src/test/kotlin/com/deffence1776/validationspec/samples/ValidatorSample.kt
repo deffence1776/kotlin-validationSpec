@@ -1,7 +1,7 @@
-package com.deffence1776.validationspec
+package com.deffence1776.validationspec.samples
 
-import com.deffence1776.validationspec.specs.ShouldBeInRange
-import com.deffence1776.validationspec.specs.ShouldNotBeBlank
+import com.deffence1776.validationspec.ValidationErrors
+import com.deffence1776.validationspec.defineSpecs
 
 //target for validation
 data class SampleUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
@@ -25,13 +25,6 @@ val sampleValidationSpec = defineSpecs<SampleUser> {
         shouldBe("password confirmPassword same") { password == confirmPassword }
     }
 
-    //reusable Spec Object.
-    fieldNames("name") {
-        spec(ShouldNotBeBlank(targetFun = { name }, fieldNameInMessage = "NAME"))
-
-        // specify specName
-        spec("name length check", ShouldBeInRange(targetFun = { name.length }, range = 1..10, fieldNameInMessage = "NAME"))
-    }
 }
 
 fun main(args: Array<String>) {
@@ -40,13 +33,9 @@ fun main(args: Array<String>) {
     //validate All spec
     val result: ValidationErrors = sampleValidationSpec.validateAll(sampleUser)
     println(result)
-//    ValidationErrors(errors=[
-//        ValidationError(specName=, errorMessage=validation failed, fieldNames=[])
+//    ValidationErrors(errors=[ValidationError(specName=, errorMessage=validation failed, fieldNames=[])
 //        , ValidationError(specName=password not blank, errorMessage=validation failed, fieldNames=[password])
-//        , ValidationError(specName=password length range, errorMessage=validation failed, fieldNames=[password])
-//        , ValidationError(specName=com.deffence1776.validationSpec.specs.ShouldNotBeBlank, errorMessage=NAME should not be blank., fieldNames=[name])
-//        , ValidationError(specName=name length check, errorMessage=NAME should be in range 1..10., fieldNames=[name])])
-//
+//        , ValidationError(specName=password length range, errorMessage=validation failed, fieldNames=[password])])
 
 
     //validate until error occurred

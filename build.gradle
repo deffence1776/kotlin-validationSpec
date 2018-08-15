@@ -30,7 +30,7 @@ repositories {
 }
 
 group 'com.deffence1776'
-version '0.5.0'
+version '0.6.0'
 
 
 dependencies {
@@ -41,6 +41,12 @@ dependencies {
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.1.7'
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
     testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+// https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
+    testImplementation group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.12.Final'
+
+//    // https://mvnrepository.com/artifact/javax.el/javax.el-api
+    testImplementation 'org.glassfish:javax.el:3.0.1-b09'
 
 
 }

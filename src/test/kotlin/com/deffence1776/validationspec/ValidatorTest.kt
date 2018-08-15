@@ -1,14 +1,15 @@
 package com.deffence1776.validationspec
 
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.StringSpec
 
-data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
-
-private const val defaultMessage = "validation failed"
 
 internal class ValidatorTest : StringSpec({
 
+    data class TestUser(val id: Int = 0, val name: String = "", val password: String = "", val confirmPassword: String = "")
+
+    val defaultMessage = "validation failed"
 
     "No error returns when object is valid" {
         val simpleSpec = defineSpecs<TestUser> {
@@ -17,6 +18,7 @@ internal class ValidatorTest : StringSpec({
 
         val result = simpleSpec.validateAll(TestUser(1))
         result.hasErrors() shouldBe false
+
     }
 
 
@@ -43,6 +45,7 @@ internal class ValidatorTest : StringSpec({
         }
 
         val result = simpleSpec.validateAll(TestUser())
+        simpleSpec.registeredSpecNames() shouldBe listOf("id size")
         result.hasErrors() shouldBe true
         result.errors.size shouldBe 2
         result.errors[0].also {
@@ -58,7 +61,7 @@ internal class ValidatorTest : StringSpec({
         }
     }
 
-    "multi specs works stop WHen error occured" {
+    "multi specs with validateUntilFirst" {
         val simpleSpec = defineSpecs<TestUser> {
             shouldBe("id size") { id > 0 }
             shouldBe { name.isNotBlank() }
@@ -76,7 +79,6 @@ internal class ValidatorTest : StringSpec({
         }
 
     }
-
 
     "specified message returns.validateAll same as registered order" {
         val testSpec = defineSpecs<TestUser> {
@@ -132,8 +134,62 @@ internal class ValidatorTest : StringSpec({
             it.fieldNames shouldBe listOf("password", "confirmPassword")
         }
 
-
-
     }
+
+
+    "nested Validation" {
+
+
+        val idSpec = defineSpecs<Int> {
+            shouldBe("id range rule") { this in 1..100 }.errorMessage { "id should be in 1..1000." }
+        }
+
+        val nameSpec = defineSpecs<String> {
+            fieldNames("name") {
+                shouldBe("name no blank rule") { this.isNotBlank() }.errorMessage { "name should not be blank." }
+            }
+        }
+
+        val passwordSpec = defineSpecs<String> {
+            fieldNames("password") {
+                shouldBe("password no blank rule") { this.isNotBlank() }.errorMessage { "password should not be blank." }
+            }
+        }
+
+        val userSpec = defineSpecs<TestUser> {
+
+            confirm({id},{idSpec})
+
+            confirm("name rule",{name},{nameSpec})
+
+            fieldNames("password") {
+                confirm({password},{passwordSpec})
+            }
+        }
+
+        val result = userSpec.validateAll(TestUser())
+
+        println(result)
+        result.hasErrors() shouldBe true
+        result.errors.size shouldBe 3
+        result.errors[0].also {
+            it.specName shouldBe "id range rule"
+            it.errorMessage shouldBe "id should be in 1..1000."
+            it.fieldNames shouldBe emptyList()
+        }
+
+        result.errors[1].also {
+            it.specName shouldBe "name rule:name no blank rule"
+            it.errorMessage shouldBe "name should not be blank."
+            it.fieldNames shouldBe listOf("name")
+        }
+
+        result.errors[2].also {
+            it.specName shouldBe "password no blank rule"
+            it.errorMessage shouldBe "password should not be blank."
+            it.fieldNames shouldBe listOf("password","password.password")
+        }
+    }
+
 
 })

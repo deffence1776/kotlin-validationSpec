@@ -8,5 +8,10 @@ data class ValidationErrors(val errors: List<ValidationError>) {
     fun singleFieldErrors(fieldName:String)=
             errors.filter { it.fieldNames.size ==1 && it.fieldNames.contains(fieldName)}
 
+    fun showAllMessages()= errors.map{it.toString()}
+
     fun hasErrors() = !errors.isEmpty()
 }
+
+
+
