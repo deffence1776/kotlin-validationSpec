@@ -25,6 +25,12 @@ class UserName(private val value: String) {
 
 //Immutable Entity
 class User(private val userId: UserId, private val userName: UserName) {
+    init{
+        //you can define assertion
+        assert(spec.isValid(this))
+    }
+
+
     companion object {
         //define spec for innerValue
         val spec = defineSpecs<User> {
