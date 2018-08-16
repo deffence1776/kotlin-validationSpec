@@ -130,6 +130,10 @@ class Validator<T> internal constructor(
 
     fun isValid(target: T) = !validateUntilFirst(target).hasErrors()
 
+    fun assert(target:T){
+        assert(isValid(target)){"spec not satisfied:\n"+validateAll(target)}
+    }
+
     fun registeredFields() = validationProcessItems.map { it.fieldNames }.flatten().distinct()
 
     fun registeredSpecNames() = validationProcessItems.map { it.specName }.filter { it != "" }.distinct()
