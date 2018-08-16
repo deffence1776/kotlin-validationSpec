@@ -152,8 +152,8 @@ class UserName(private val value: String) {
 //Immutable Entity
 class User(private val userId: UserId, private val userName: UserName) {
     init{
-        //you can define assertion 
-        assert(spec.isValid(this))
+        //you can define assertion.by assert method validate if -ea option added 
+        spec.assert(this)
     }
     
     companion object {
@@ -216,7 +216,7 @@ class Item(val itemId:String){
     }
     init{
         //assert is useful
-        assert(spec.isValid(this)){"doesn't satisfy the spec:\n"+ spec.validateAll(this)}
+        spec.assert(this)
     }
 }
 
@@ -225,7 +225,7 @@ class RegisterForm(){
     var itemId=""
         set(value){
             //assert
-            assert(spec.isValid(this)){"doesn't satisfy the spec:\n"+ spec.validateAll(this)}
+            spec.assert(this)
             field = value
         }
 

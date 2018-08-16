@@ -21,7 +21,7 @@ class Item(val itemId:String){
     }
     init{
         //assert is useful
-        assert(spec.isValid(this)){"doesn't satisfy the spec:\n"+ spec.validateAll(this)}
+        spec.assert(this)
     }
 }
 
@@ -30,7 +30,7 @@ class RegisterForm(){
     var itemId=""
         set(value){
             //assert
-            assert(spec.isValid(this)){"doesn't satisfy the spec:\n"+ spec.validateAll(this)}
+            spec.assert(this)
             field = value
         }
 

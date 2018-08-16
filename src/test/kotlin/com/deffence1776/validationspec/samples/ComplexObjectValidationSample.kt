@@ -27,7 +27,7 @@ class UserName(private val value: String) {
 class User(private val userId: UserId, private val userName: UserName) {
     init{
         //you can define assertion
-        assert(spec.isValid(this))
+        spec.assert(this)
     }
 
 
